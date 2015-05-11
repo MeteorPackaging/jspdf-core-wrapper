@@ -1,0 +1,7 @@
+{
+  "version": "1.0.272",
+  "upstream": {
+    "git": "https://github.com/MrRio/jsPDF.git",
+    "versionFile": "package.js"
+  }
+}
