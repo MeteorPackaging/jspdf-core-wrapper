@@ -4,8 +4,8 @@
 
 Installation
 
-```
 With Meteor 1.0.1 and above, install using:
-```
 
+```
 $ meteor add jspdf:core
+```
