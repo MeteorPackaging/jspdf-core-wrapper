@@ -7,5 +7,10 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.0.1');
-  api.addFiles('upstream/dist/jspdf.debug.js', 'client');
+  api.addFiles([
+    'meteor-pre.js',
+    'upstream/dist/jspdf.debug.js',
+    'meteor-post.js',
+  ], 'client');
+  api.export('jsPDF');
 });
