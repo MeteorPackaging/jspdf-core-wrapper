@@ -11,35 +11,25 @@ var
 
 // Clone the upstream repo
 // optional parameter: --tag <tag_name>
-gulp.task('clone', function(){
+gulp.task('getUpstream', function(){
   return del(['upstream'], function(err){
     if (err) throw err;
-    git.clone(autopublish.upstream.git, {args: 'upstream'}, function (err) {
+    console.log("cloning " + autopublish.upstream.git);
+    git.clone(autopublish.upstream.git, {args: ' --recursive upstream'}, function (err) {
       if (err) throw err;
+      var
+        release = autopublish.release,
+        tag = gutil.env.tag || release,
+        path = __dirname + '/upstream/'
+      ;
+      console.log('checking out ' + tag);
+      return git.checkout(tag, {cwd: path}, function (err) {
+        if (err) throw err;
+        git.status({cwd: path}, function (err) {
+          if (err) throw err;
+        });
+      });
     });
-  });
-});
-
-// Clone the upstream repo
-// optional parameter: --tag <tag_name>
-gulp.task('checkout', function(){
-  var
-    version = autopublish.version,
-    tag = gutil.env.tag || version,
-    path = __dirname + '/upstream/'
-  ;
-  console.log('checking out ' + tag);
-  return git.checkout(tag, {cwd: path}, function (err) {
-    if (err) throw err;
-    git.status({cwd: path}, function (err) {
-      if (err) throw err;
-    });
-  });
-});
-
-gulp.task('getUpstream', function(callback) {
-  runSequence('clone', 'checkout', function (err) {
-    if (err) throw err;
   });
 });
 
@@ -69,4 +59,16 @@ gulp.task('updateVersion', function() {
       throw 'Unable to extract current version!';
     }
   });
+});
+
+// Stores latest published release into 'autopublish.json'
+gulp.task('updateRelease', function() {
+  var tag = gutil.env.tag;
+  if (!tag) throw 'no tag parameter provided!';
+  console.log('Release: ' + tag);
+
+  var versionRegexp = /(release?\"?\s?=?\:?\s[\'\"])(.*)([\'\"])/gi;
+  return gulp.src(['autopublish.json'])
+        .pipe(replace(versionRegexp, '$1' + tag + '$3'))
+        .pipe(gulp.dest('./'));
 });
