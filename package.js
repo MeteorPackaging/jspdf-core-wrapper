@@ -7,5 +7,5 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.0.1');
-  api.addFiles('upstream/dist/jspdf.debug.js');
+  api.addFiles('upstream/dist/jspdf.debug.js', 'client');
 });
