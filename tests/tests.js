@@ -6,15 +6,9 @@ Tinytest.add("jsPDF - correct export", function(test) {
 Tinytest.add("jsPDF - sample document creation", function(test) {
 	// Try creating a new document
 	var doc = new jsPDF();
+  test.isTrue(doc.internal.pages[1].length === 2);
+
+	// Try adding some text
 	doc.text(20, 20, 'Hello world.');
-
-	// in case on error was thrown before...
-	// ...simply check we actually have some text inside the document
-	var textDim = doc.getTextDimensions();
-	// Object {w: 71.24991023622047, h: 18.749976377952756}
-
-  test.include(textDim, 'w');
-  test.isTrue(textDim.w > 0);
-  test.include(textDim, 'h');
-  test.isTrue(textDim.h > 0);
+  test.isTrue(doc.internal.pages[1].length > 2);
 });

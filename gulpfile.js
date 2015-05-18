@@ -1,5 +1,5 @@
 var
-  autopublish = require('./autopublish.json')
+  autopublish = require('./autopublish.json'),
   del = require('del'),
   download = require("gulp-download"),
   fs = require('fs'),
@@ -7,7 +7,7 @@ var
   gulp = require('gulp'),
   gutil = require('gulp-util'),
   replace = require('gulp-replace'),
-  runSequence = require('run-sequence'),
+  runSequence = require('run-sequence')
 ;
 
 // Clone the upstream repo
@@ -48,18 +48,22 @@ gulp.task('updateVersion', function() {
 
     var
       versionRegexp = /(version?\"?\s?=?\:?\s[\'\"])([\d\.]*)([\'\"])/gi,
-      match = versionRegexp.exec(content)
+      match = versionRegexp.exec(content),
+      version
     ;
-    if (match.length === 4) {
-      var version = match[2];
-      console.log('Verision: ' + version);
-      gulp.src(['package.js', 'autopublish.json'])
-        .pipe(replace(versionRegexp, '$1' + version + '$3'))
-        .pipe(gulp.dest('./'));
+    if (match && match.length === 4) {
+      version = match[2];
+    }
+    else if (gutil.env.tag) {
+      version = gutil.env.tag;
     }
     else {
       throw 'Unable to extract current version!';
     }
+    console.log('Verision: ' + version);
+    gulp.src(['package.js', 'autopublish.json'])
+      .pipe(replace(versionRegexp, '$1' + version + '$3'))
+      .pipe(gulp.dest('./'));
   });
 });
 

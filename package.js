@@ -21,7 +21,7 @@ Package.on_test(function(api) {
   api.use([
     'tinytest',
     'test-helpers'
-  ], ['client', 'server']);
+  ], ['client']);
 
   api.add_files([
     'tests/tests.js',

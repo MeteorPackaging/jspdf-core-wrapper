@@ -1,2 +1,4 @@
 upstream
 node_modules
+phantom_runner.js
+start_test.js
