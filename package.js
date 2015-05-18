@@ -14,3 +14,16 @@ Package.onUse(function(api) {
   ], 'client');
   api.export('jsPDF');
 });
+
+Package.on_test(function(api) {
+  api.use('jspdf:core');
+
+  api.use([
+    'tinytest',
+    'test-helpers'
+  ], ['client', 'server']);
+
+  api.add_files([
+    'tests/tests.js',
+  ], ['client']);
+});
