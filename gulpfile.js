@@ -1,12 +1,13 @@
 var
+  autopublish = require('./autopublish.json')
+  del = require('del'),
+  download = require("gulp-download"),
   fs = require('fs'),
+  git = require('gulp-git'),
   gulp = require('gulp'),
   gutil = require('gulp-util'),
-  git = require('gulp-git'),
-  del = require('del'),
   replace = require('gulp-replace'),
   runSequence = require('run-sequence'),
-  autopublish = require('./autopublish.json')
 ;
 
 // Clone the upstream repo
@@ -32,6 +33,7 @@ gulp.task('getUpstream', function(){
     });
   });
 });
+
 
 // Picks up current version of upstream repo and updates
 // 'package.js' and 'autopublish.json' accordingly
@@ -71,4 +73,39 @@ gulp.task('updateRelease', function() {
   return gulp.src(['autopublish.json'])
         .pipe(replace(versionRegexp, '$1' + tag + '$3'))
         .pipe(gulp.dest('./'));
+});
+
+
+// Donwload scripts necessary to run tests
+// Thanks @aronuda for providing them!
+// https://github.com/arunoda/travis-ci-meteor-packages
+gulp.task('setuptests', function(){
+  return download([
+    'https://raw.github.com/arunoda/travis-ci-meteor-packages/master/start_test.js',
+    'https://raw.github.com/arunoda/travis-ci-meteor-packages/master/phantom_runner.js',
+  ]).pipe(gulp.dest("./"));
+});
+
+
+// Actually run tests
+// NOTE: phantomjs must be available on the system
+gulp.task('runtests', function(){
+  var
+    spawn = require('child_process').spawn,
+    tests = spawn('node', ['start_test'])
+  ;
+
+  tests.stdout.pipe(process.stdout);
+  tests.stderr.pipe(process.stderr);
+  tests.on('close', function(code) {
+    process.exit(code);
+  });
+
+  return tests;
+});
+
+
+// Task to be used to test the package
+gulp.task('test', function(){
+  runSequence('setuptests', 'runtests');
 });
