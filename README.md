@@ -1,6 +1,6 @@
 # Meteor jsPDF
 
-[https://github.com/MrRio/jsPDF](jsPDF) packaged for Meteor.
+[https://github.com/MrRio/jsPDF](https://github.com/MrRio/jsPDF) packaged for Meteor.
 
 Installation
 
